@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 09:17:51 by cbernot           #+#    #+#             */
-/*   Updated: 2022/11/18 12:36:56 by cbernot          ###   ########.fr       */
+/*   Updated: 2022/11/19 18:17:49 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,26 @@ int main()
 
 	fd = open("./test", O_RDONLY);
 	returned_line  = get_next_line(fd);
-	printf("line %s\n", returned_line);
+	printf("get_next_line : %s\n", returned_line);
+	
 	returned_line  = get_next_line(fd);
-	printf("line %s\n", returned_line);
+	printf("get_next_line : %s\n", returned_line);
+
+	returned_line  = get_next_line(fd);
+	printf("get_next_line : %s\n", returned_line);
+
+	returned_line  = get_next_line(fd);
+	printf("get_next_line : %s\n", returned_line);
+
+	returned_line  = get_next_line(fd);
+	printf("get_next_line : %s\n", returned_line);
+
+	returned_line  = get_next_line(fd);
+	printf("get_next_line : %s\n", returned_line);
+
+	returned_line  = get_next_line(fd);
+	printf("get_next_line : %s\n", returned_line);
+
 	/*
 	while(returned_line)
 	{

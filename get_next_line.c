@@ -6,28 +6,28 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 09:15:23 by cbernot           #+#    #+#             */
-/*   Updated: 2022/11/18 12:46:41 by cbernot          ###   ########.fr       */
+/*   Updated: 2022/11/19 18:18:03 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*ft_save_in_stash(const char *buf, char *stash)
+static char	*ft_copy_to_stash(char *stash, const char *buf)
 {
-	char	*res;
+	char	*temp;
 
 	if (!stash)
 		return (ft_strdup(buf));
-	res = malloc(sizeof(char) * (ft_strlen(stash) + ft_strlen(buf) + 1));
-	if (!res)
+	temp = malloc(sizeof(char) * (ft_strlen(stash) + ft_strlen(buf) + 1));
+	if (!temp)
 		return (0);
-	ft_strlcpy(res, stash, ft_strlen(stash) + ft_strlen(buf) + 1);
-	ft_strlcat(res, buf, ft_strlen(stash) + ft_strlen(buf) + 1);
-	free(stash);
-	return (res);
+	ft_strlcpy(temp, stash, ft_strlen(stash) + ft_strlen(buf) + 1);
+	ft_strlcat(temp, buf, ft_strlen(stash) + ft_strlen(buf) + 1);
+	stash = ft_strdup(temp);
+	return (stash);	
 }
 
-static int	ft_stash_have_nl(const char *stash)
+static int	ft_have_nl(const char *stash, const char *buf)
 {
 	int	i;
 
@@ -43,95 +43,78 @@ static int	ft_stash_have_nl(const char *stash)
 
 static char	*ft_extract_line(char *stash)
 {
-	char	*line;
 	int		i;
-	int		j;
+	char	*line;
 
 	i = 0;
-	while (stash[i] != '\0' && stash[i] != '\n')
+	while (stash[i] != '\n')
 		i++;
-	//printf("nl is at index %d\n", i - 1);
-	line = malloc(sizeof(char) * (i + 1));
+	//printf("nl qt index %d\n", i);
+	line = malloc(sizeof(char) * i + 1);
 	if (!line)
 		return (0);
-	j = 0;
-	//printf("########\n");
-	while (j <= i)
-	{
-		line[j] = stash[j];
-		//printf("line[%d] : %c   ", j, line[j]);
-		//if (line[j] == '\n')
-		//	printf("line[%d] is a nl\n", j);
-		j++;
-	}
-	//printf("########\n");
-	line[j] = '\0';
+	ft_strncpy(line, stash, i);
+	//printf("new strdup stash = %s\n", stash);
 	return (line);
 }
 
 static char	*ft_refresh_stash(char *stash)
 {
+	char	*temp;
 	int		i;
 	int		j;
-	char	*new_stash;
 
 	i = 0;
-	while (stash[i] != '\0' && stash[i] != '\n')
+	while (stash[i] != '\n')
 		i++;
-	new_stash = malloc(sizeof(char) * (ft_strlen(stash) - (i) + 1));
-	if (!new_stash)
+	i++;
+	temp = malloc(sizeof(char) * (ft_strlen(stash) - i + 1));
+	if (!temp)
 		return (0);
 	j = 0;
-	printf("########\n");
-	while (stash[i + 1] != '\0')
+	while (stash[i] != '\0')
 	{
-		printf("stash[%d] = %c  ", i, stash[i]);
-		new_stash[j] = stash[i];
+		temp[j] = stash[i];
 		i++;
 		j++;
 	}
-	new_stash[j] = '\0';
-	printf("########\n");
 	free(stash);
-	return (new_stash);
+	stash = ft_strdup(temp);
+	free(temp);
+	return (stash);
 }
 
 char	*get_next_line(int fd)
 {
-	int			ret;	//nb bytes lus par read
-	char		buf[BUFFER_SIZE];
-	static char	*stash;
-	char		*line;
-	
-	ret = read(fd, buf, BUFFER_SIZE);
-	if (ret < 1)
-		return (0);
-	stash = ft_save_in_stash(buf, stash);
-	printf("stash after read : %s\n", stash);
-	if (ft_stash_have_nl(stash))
+	char			buf[BUFFER_SIZE + 1];	// prend les bytes lus par read
+	char			*line;				// ligne avec \n retournee
+	static char*	stash;				// est concaten avec la valeur de buf a chaque iteration
+	int				ret;				// valeur de retour de read (nb bytes lus)
+
+	ret = -2;
+	//printf("stash in new iteration : %s\n", stash);
+	while (ret > 0 || ret == -2)
 	{
-		//printf("stash before : %s\n", stash);
-		line = ft_extract_line(stash);
-		//printf("line : %s\n", line);
-		stash = ft_refresh_stash(stash);
-		//printf("stash after : %s\n", stash);
-		//printf("line : %s", line);
-		return (line);
-	}
-	while (ret != 0)
-	{
+		//printf("I'm in the loop !\n");
 		ret = read(fd, buf, BUFFER_SIZE);
-		stash = ft_save_in_stash(buf, stash);
-		if (ft_stash_have_nl(stash))
+		//printf("ret : %d\n", ret);
+		if (ret == -1 || ret == 0)
+			return (0);
+		buf[ret] = '\0';
+		//printf("buf : %s\n", buf);
+		stash = ft_copy_to_stash(stash, buf);
+		//printf("stash concat with buf : %s\n", stash);	//TODO remove
+		if (ft_have_nl(stash, buf))
 		{
-			//printf("stash before : %s\n", stash);
+			//printf("----> NL DETECTED IN '%s'\n", stash);
 			line = ft_extract_line(stash);
-			//printf("line : %s", line);
 			stash = ft_refresh_stash(stash);
-			printf("stash at the end : %s\n", stash);
-			return (line);
-			//printf("stash after : %s\n", stash);
+			//printf("new stash : %s\n", stash);
+			return(line);
 		}
 	}
-	return (0);
+	//line = ft_strdup(stash);
+	//printf("line in strdup : %s\n", line);
+	//stash = NULL;
+	return (stash);
 }
