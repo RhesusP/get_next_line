@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/18 09:17:51 by cbernot           #+#    #+#             */
-/*   Updated: 2022/11/22 20:08:19 by cbernot          ###   ########.fr       */
+/*   Created: 2022/11/23 14:21:47 by cbernot           #+#    #+#             */
+/*   Updated: 2022/11/23 14:27:44 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,30 +21,27 @@ int main()
 	fd = open("./test", O_RDONLY);
 	returned_line  = get_next_line(fd);
 	printf("get_next_line : %s\n", returned_line);
+	free(returned_line);
 	
 	returned_line  = get_next_line(fd);
 	printf("get_next_line : %s\n", returned_line);
+	free(returned_line);
 
 	returned_line  = get_next_line(fd);
 	printf("get_next_line : %s\n", returned_line);
+	free(returned_line);
 
 	returned_line  = get_next_line(fd);
 	printf("get_next_line : %s\n", returned_line);
+	free(returned_line);
 
 	returned_line  = get_next_line(fd);
 	printf("get_next_line : %s\n", returned_line);
+	free(returned_line);
 
 	returned_line  = get_next_line(fd);
 	printf("get_next_line : %s\n", returned_line);
-
-	returned_line  = get_next_line(fd);
-	printf("get_next_line : %s\n", returned_line);
-
-	/*
-	while(returned_line)
-	{
-		returned_line = get_next_line(fd);
-		printf("line : %s\n", returned_line);
-	}
-	*/
+	free(returned_line);
+	
+	return (0);
 }

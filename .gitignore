@@ -1,2 +1,5 @@
 *.gch
 .vscode/
+*.out
+*.dSYM
+test
