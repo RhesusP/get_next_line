@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 09:15:23 by cbernot           #+#    #+#             */
-/*   Updated: 2022/11/23 16:59:33 by cbernot          ###   ########.fr       */
+/*   Updated: 2022/11/23 17:59:33 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,21 @@ static char	*ft_copy_to_stash(char *stash, char *buf)
 
 	res = 0;
 	if (!stash)
-		return (ft_strdup(buf));
+	{
+		res = ft_strdup(buf);
+		if (!res)
+			return (ft_free_stash(&res));
+		return (res);
+	}
 	temp = ft_strdup(stash);
-	free(stash);
-	stash = NULL;
+	if (!temp)
+	{
+		return (ft_free_stash(&temp));
+	}
+	ft_free_stash(&stash);
 	res = ft_strjoin(temp, buf);
+	if (!res)
+		ft_free_stash(&res);
 	free(temp);
 	return (res);
 }
@@ -73,14 +83,11 @@ static char	*ft_recreate_stash(char *stash)
 	while (stash[i] != '\n')
 		i++;
 	if (stash[i + 1] == '\0')
-	{
-		free(stash);
-		stash = NULL;
-		return (NULL);
-	}
+		return (ft_free_stash(&stash));
 	res = ft_substr(stash, i + 1, ft_strlen(stash));
-	free(stash);
-	stash = NULL;
+	if (!res)
+		return (NULL);
+	ft_free_stash(&stash);
 	return (res);
 }
 
@@ -93,40 +100,24 @@ char	*get_next_line(int fd)
 
 	ret = BUFFER_SIZE;
 	if (fd < 0 || BUFFER_SIZE <= 0)
-	{
-		if (stash)
-		{
-			free(stash);
-			stash = NULL;
-		}
-		return (0);
-	}
+		return (ft_free_stash(&stash));
 	while (ret > 0)
 	{
 		ret = read(fd, buf, BUFFER_SIZE);
-		if (ret <= 0 && !stash)
-		{
-			free(stash);
-			stash = NULL;
-			return (0);
-		}
-		if (ret == -1)
-		{
-			free(stash);
-			stash = NULL;
-			return (0);
-		}
+		if ((ret <= 0 && !stash) || ret == -1)
+			return (ft_free_stash(&stash));
 		buf[ret] = '\0';
 		stash = ft_copy_to_stash(stash, buf);
-		if (ft_have_nl(stash))
+		if (stash && ft_have_nl(stash))	//stash condition added for strict tests
 		{
 			line = ft_extract_line(stash);
+			//printf("line : %s\n", line);
 			stash = ft_recreate_stash(stash);
+			//printf("stash : %s\n", stash);
 			return (line);
 		}
 	}
 	line = ft_strdup(stash);
-	free(stash);
-	stash = NULL;
+	ft_free_stash(&stash);
 	return (line);
 }

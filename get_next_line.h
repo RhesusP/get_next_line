@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 09:18:54 by cbernot           #+#    #+#             */
-/*   Updated: 2022/11/23 16:05:52 by cbernot          ###   ########.fr       */
+/*   Updated: 2022/11/23 17:22:35 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ size_t	ft_strlen(const char *s);
 char	*ft_strdup(const char *s1);
 char	*ft_strjoin(char const *s1, char const *s2);
 char    *ft_substr(char const *s, unsigned int start, size_t len);
+void	*ft_free_stash(char **stash);
 
 
 #endif

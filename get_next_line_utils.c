@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 09:36:53 by cbernot           #+#    #+#             */
-/*   Updated: 2022/11/23 14:50:50 by cbernot          ###   ########.fr       */
+/*   Updated: 2022/11/23 18:02:16 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ char	*ft_strdup(const char *s1)
 	char	*res;
 	size_t	i;
 
-	//printf("taille de \"%s\" dans malloc : %zu\n", s1, ft_strlen(s1));
 	res = malloc(sizeof(char) * (ft_strlen(s1) + 1));
 	if (!res)
 		return (NULL);
@@ -44,8 +43,8 @@ char	*ft_strdup(const char *s1)
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*res;
-	int		i;
-	int		j;
+	size_t	i;
+	size_t	j;
 
 	if (!s1 || !s2)
 		return (NULL);
@@ -92,4 +91,14 @@ char    *ft_substr(char const *s, unsigned int start, size_t len)
         }
         res[j] = '\0';
         return (res);
+}
+
+void	*ft_free_stash(char **stash)
+{
+	if (*stash)
+	{
+		free(*stash);
+		*stash = NULL;
+	}
+	return (NULL);
 }
