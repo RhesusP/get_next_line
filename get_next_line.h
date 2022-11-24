@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 09:18:54 by cbernot           #+#    #+#             */
-/*   Updated: 2022/11/23 20:28:50 by cbernot          ###   ########.fr       */
+/*   Updated: 2022/11/24 13:05:47 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <stdio.h>	//TODO remove include
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1
+#  define BUFFER_SIZE 100000
 # endif
 
 char	*get_next_line(int fd);
