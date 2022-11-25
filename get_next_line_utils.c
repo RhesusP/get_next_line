@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 09:36:53 by cbernot           #+#    #+#             */
-/*   Updated: 2022/11/24 17:27:13 by cbernot          ###   ########.fr       */
+/*   Updated: 2022/11/25 08:45:00 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,12 +95,27 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	return (res);
 }
 
-void	*ft_free_stash(char **stash)
+void	*ft_free_stash(char **stash, int create_line)
 {
-	if (*stash)
+	char	*line;
+
+	if (!*stash)
+		return (NULL);
+	if (create_line == 0)
 	{
+		if (*stash)
+		{
+			free(*stash);
+			*stash = NULL;
+		}
+		return (NULL);
+	}
+	else if (create_line == 1)
+	{
+		line = ft_strdup(*stash);
 		free(*stash);
 		*stash = NULL;
+		return (line);
 	}
 	return (NULL);
 }
